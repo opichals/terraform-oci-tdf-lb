@@ -10,6 +10,7 @@ locals {
     display_name   = "lb"
     compartment_id = null
     shape          = data.oci_load_balancer_shapes.this.shapes[0].name
+    shape_details  = {}
     subnet_ids     = null
     private        = true
     nsg_ids        = []
@@ -24,6 +25,13 @@ resource "oci_load_balancer_load_balancer" "this" {
   compartment_id = var.lb_options.compartment_id != null ? var.lb_options.compartment_id : var.default_compartment_id
   display_name   = var.lb_options.display_name != null ? var.lb_options.display_name : local.lb_options_defaults.display_name
   shape          = var.lb_options.shape != null ? var.lb_options.shape : local.lb_options_defaults.shape
+  dynamic "shape_details" {
+    for_each = var.lb_options.shape_details[*]
+    content {
+      maximum_bandwidth_in_mbps = shape_details.value.maximum_bandwidth_in_mbps
+      minimum_bandwidth_in_mbps = shape_details.value.minimum_bandwidth_in_mbps
+    }
+  }
   # can't really provide a default value here, so no need for additional logic (subnets must be user-defined)
   subnet_ids                 = var.lb_options.subnet_ids
   is_private                 = var.lb_options.private != null ? var.lb_options.private : local.lb_options_defaults.private

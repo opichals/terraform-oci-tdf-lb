@@ -12,6 +12,10 @@ variable "lb_options" {
     display_name    = string,
     compartment_id  = string,
     shape           = string,
+    shape_details   = object({
+        maximum_bandwidth_in_mbps = number
+        minimum_bandwidth_in_mbps = number
+    })
     subnet_ids      = list(string),
     private         = bool,
     nsg_ids         = list(string),
@@ -23,6 +27,7 @@ variable "lb_options" {
     display_name    = null
     compartment_id  = null
     shape           = null
+    shape_details   = null
     subnet_ids      = null
     private         = null
     nsg_ids         = null
